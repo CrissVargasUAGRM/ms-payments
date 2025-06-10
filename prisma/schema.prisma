@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Order {
+  id             String         @id
+  totalAmount    Float
+  totalItems     Int
+  status         String         @default("PENDING")
+  paid           Boolean        @default(false)
+  paidAt         DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime
+  stripeChargeId String?
+  userid         Int            @default(1)
+  clientid       Int            @default(1)
+  OrderItem      OrderItem[]
+  OrderReceipt   OrderReceipt[]
+  Payment        Payment[]
+}
+
+model OrderItem {
+  id        String  @id
+  productId Int
+  quantity  Int
+  price     Float
+  orderId   String?
+  Order     Order?  @relation(fields: [orderId], references: [id])
+}
+
+model OrderReceipt {
+  id         String   @id
+  orderId    String
+  receiptUrl String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+  Order      Order    @relation(fields: [orderId], references: [id])
+}
+
+model Payment {
+  id        Int       @id @default(autoincrement())
+  clientid  Int       @default(1)
+  userid    Int       @default(1)
+  orderId   String
+  amount    Float
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
+  Order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Float
+  createdAt DateTime @default(now())
+  updateAt  DateTime @default(now())
+  tz_lock   Int      @default(0)
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  name     String
+  password String
+}

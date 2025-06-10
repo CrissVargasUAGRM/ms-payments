@@ -1,28 +1,25 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { CreatePaymentDto } from './dto/create-payment.dto';
 
 @Controller('payments')
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
-  @Post('create-payment-session')
-  createPaymentSession() {
-    return 'createPaymentSession';
+  @MessagePattern('createPayment')
+  async createPaymentSession(@Payload() payment: any) {
+    return await this.paymentsService.create(payment);;
   }
 
-  @Get('success')
+  @MessagePattern('successPayment')
   success() {
     return 'payment success';
   }
 
-  @Get('cancel')
+  @MessagePattern('cancelPayment')
   cancel() {
     return 'payment cancel';
-  }
-
-  @Post('webhook')
-  async methodToPayment() {
-    return 'method to payment';
   }
 
 }
