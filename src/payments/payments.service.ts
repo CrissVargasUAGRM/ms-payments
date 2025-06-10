@@ -24,9 +24,12 @@ export class PaymentsService extends PrismaClient implements OnModuleInit{
   async create(createPaymentDto: CreatePaymentDto) {
     try {
       // 1.- Validar que el UUID de la orden exista
-      /*const order = await firstValueFrom(
+      /*const order: any = await firstValueFrom(
         this.client.send('findOneOrder', createPaymentDto.orderId)
-      );*/
+      );
+
+      console.log('Se llamo a oredenes');
+      console.log(order);*/
 
       // 2.- Crear el pago en la base de datos
       const payment = await this.payment.create({
@@ -40,11 +43,10 @@ export class PaymentsService extends PrismaClient implements OnModuleInit{
       });
 
       // cambiar de estado la orden de 'PENDING' a 'PAYED'
-      const changeStatus = await firstValueFrom(
-        this.client.send('changeOrderStatus', {id: createPaymentDto.orderId, status: 'PAYED'}),
-      );
-      console.log(changeStatus)
-      return 'This action adds a new payment';
+      //const changeStatus = await firstValueFrom(
+      //  this.client.send('changeOrderStatus', {id: createPaymentDto.orderId, status: 'PAYED'}),
+      //);
+      return payment;
     } catch (error) {
       console.log(error)
       this.logger.error('Error creating payment', error);
