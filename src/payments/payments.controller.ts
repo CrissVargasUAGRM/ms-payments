@@ -12,10 +12,10 @@ export class PaymentsController {
     return await this.paymentsService.create(payment);;
   }
 
-  @MessagePattern('successPayment')
-  success() {
-    return 'payment success';
-  }
+  /*@MessagePattern('getPayments')
+  async success() {
+    return await this.paymentsService.findAll();
+  }*/
 
   @MessagePattern('cancelPayment')
   cancel() {

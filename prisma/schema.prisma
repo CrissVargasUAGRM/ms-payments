@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -21,7 +22,6 @@ model Order {
   clientid       Int            @default(1)
   OrderItem      OrderItem[]
   OrderReceipt   OrderReceipt[]
-  Payment        Payment[]
 }
 
 model OrderItem {
@@ -50,7 +50,6 @@ model Payment {
   amount    Float
   createdAt DateTime? @default(now())
   updatedAt DateTime? @default(now())
-  Order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model Product {
