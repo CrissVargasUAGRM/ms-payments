@@ -24,9 +24,11 @@ export class PaymentsService extends PrismaClient implements OnModuleInit{
   async create(createPaymentDto: CreatePaymentDto) {
     try {
       // 1.- Validar que el UUID de la orden exista
-      await firstValueFrom(
+      const order = await firstValueFrom(
         this.client.send('findOneOrder', { id: createPaymentDto.orderId }),
       );
+
+      console.log(order);
 
       // cambiar de estado la orden de 'PENDING' a 'PAID'
       this.order.update({
@@ -44,6 +46,23 @@ export class PaymentsService extends PrismaClient implements OnModuleInit{
           createdAt: new Date(),
         }
       });
+
+      // llamar a modificar la cantidad de productos
+      // obtener los productos de la orden
+      const productsId = order.OrderItem.map((orderItem) => ({
+        id: orderItem.productId,
+        quantity: orderItem.quantity
+      }));
+
+      try {
+        productsId.forEach(async(productId) => {
+        await firstValueFrom(
+          this.client.send({cmd: 'update-quantity-products'}, productId)
+        );
+      });
+      } catch (error) {
+        console.log(error)
+      }
 
       return payment;
     } catch (error) {

@@ -55,6 +55,7 @@ model Product {
   id        Int      @id @default(autoincrement())
   name      String
   price     Float
+  quantity  Int
   createdAt DateTime @default(now())
   updateAt  DateTime @default(now())
   tz_lock   Int      @default(0)
