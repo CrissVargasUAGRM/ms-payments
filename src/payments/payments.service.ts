@@ -55,11 +55,11 @@ export class PaymentsService extends PrismaClient implements OnModuleInit{
       }));
 
       try {
-        productsId.forEach(async(productId) => {
-        await firstValueFrom(
-          this.client.send({cmd: 'update-quantity-products'}, productId)
-        );
-      });
+          const updates = productsId.map(productId =>
+          firstValueFrom(
+            this.client.send({ cmd: 'update-quantity-products' }, productId)
+          ));
+          await Promise.all(updates);
       } catch (error) {
         console.log(error)
       }
